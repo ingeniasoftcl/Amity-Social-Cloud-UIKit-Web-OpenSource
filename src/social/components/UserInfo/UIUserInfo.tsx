@@ -9,6 +9,8 @@ import { backgroundImage as UserImage } from '~/icons/User';
 
 import BanIcon from '~/icons/Ban';
 
+import axios from 'axios';
+
 import {
   Avatar,
   Container,
@@ -56,7 +58,9 @@ interface UIUserInfoProps {
   onPendingNotificationClick?: () => void;
   onFollowingCountClick?: () => void;
   onFollowerCountClick?: () => void;
+  OnPostCountClick?: () => void;
   onReportClick?: () => void;
+  postCount?: number;
   followerCount?: number;
   followingCount?: number;
   isPrivateNetwork?: boolean;
@@ -77,6 +81,7 @@ const UIUserInfo = ({
   onPendingNotificationClick,
   onFollowingCountClick,
   onFollowerCountClick,
+  OnPostCountClick,
   onReportClick,
   isFollowPending,
   isFollowNone,
@@ -89,6 +94,41 @@ const UIUserInfo = ({
   const { formatMessage } = useIntl();
   const { isFlaggedByMe } = useUserFlaggedByMe(userId || undefined);
   const { confirm } = useConfirmContext();
+  const [numberOfPosts, setNumberOfPosts] = useState<number>(0);
+
+  // Added to count users posts
+
+  useEffect(() => {
+    const fetchNumberOfPosts = async () => {
+      console.log('Fetching number of posts');
+      try {
+        const response = await axios.get(
+          'https://dev-backend.we-say.com/api/posts/number-of-posts',
+          {
+            headers: {
+              Authorization: `Bearer ${getCookie('token')}`,
+            },
+          },
+        );
+        console.log(response.data);
+        setNumberOfPosts(response.data.numberOfPosts);
+      } catch (error) {
+        console.error('Failed to fetch User Posts:', error);
+      }
+    };
+
+    fetchNumberOfPosts();
+  }, []);
+
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    console.log(parts[1]);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+  };
+
+  //
 
   const { followers: pendingUsers } = useFollowersCollection({
     userId: currentUserId,
@@ -177,6 +217,21 @@ const UIUserInfo = ({
         ) : null}
       </ProfileNameWrapper>
       <CountContainer>
+        {/* This is the counter for the number of posts */}
+
+        <ClickableCount
+          onClick={() => {
+            OnPostCountClick?.();
+            // setActiveTab(UserFeedTabs.FOLLOWERS);
+            // setTimeout(() => setFollowActiveTab(FollowersTabs.FOLLOWERS), 250);
+          }}
+        >
+          {millify(numberOfPosts)}
+        </ClickableCount>
+        <FormattedMessage id="posts" />
+
+        {/*  */}
+
         <ClickableCount
           onClick={() => {
             // setActiveTab(UserFeedTabs.FOLLOWERS);
