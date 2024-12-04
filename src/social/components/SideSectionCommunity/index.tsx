@@ -41,6 +41,14 @@ const SideSectionCommunity = ({ shouldHideExplore, children }: SideSectionCommun
           <FormattedMessage id="sidesectioncommunity.explore" />
         </SideMenuActionItem>
       )}
+      <SideMenuActionItem
+        data-qa-anchor="side-section-community-side-menu-action-item-explore-button"
+        icon={<SearchIcon />}
+        active={page.type === PageTypes.Search}
+        onClick={() => onChangePage(PageTypes.Search)}
+      >
+        <FormattedMessage id="sidesectioncommunity.search" />
+      </SideMenuActionItem>
       {children}
     </SideMenuSection>
   );

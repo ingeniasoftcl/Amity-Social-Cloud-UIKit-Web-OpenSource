@@ -22,6 +22,7 @@ interface UserInfoProps {
   onFollowingCountClick?: () => void;
   onFollowerCountClick?: () => void;
   onPendingNotificationClick?: () => void;
+  onPostCountClick?: () => void;
 }
 
 const UserInfo = ({
@@ -30,6 +31,7 @@ const UserInfo = ({
   onFollowingCountClick,
   onFollowerCountClick,
   onPendingNotificationClick,
+  onPostCountClick,
   isPrivateNetwork,
 }: UserInfoProps) => {
   const { currentUserId } = useSDK();
@@ -89,6 +91,7 @@ const UserInfo = ({
       onFollowerCountClick={onFollowerCountClick}
       onFollowingCountClick={onFollowingCountClick}
       onPendingNotificationClick={onPendingNotificationClick}
+      OnPostCountClick={onPostCountClick}
       onFollowDecline={onFollowDecline}
       onFollowRequest={onFollowRequest}
       onUnFollow={onUnFollowFn}

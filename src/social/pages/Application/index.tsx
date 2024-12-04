@@ -16,11 +16,13 @@ import CommunityEditPage from '~/social/pages/CommunityEdit';
 import ProfileSettings from '~/social/components/ProfileSettings';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import useSDK from '~/core/hooks/useSDK';
+import SearchFeed from '../SearchFeed';
 
 import { StoryProvider } from '~/v4/social/providers/StoryProvider';
 import CommunityFeed from '../CommunityFeed';
 import ViewStoryPage from '../ViewStoryPage';
 import AmityDraftStoryPage from '../DraftPage';
+import { Search } from '~/icons';
 
 const ApplicationContainer = styled.div`
   height: 100%;
@@ -81,6 +83,7 @@ const Community = () => {
       <ApplicationContainer>
         <MainLayout aside={<StyledCommunitySideMenu activeCommunity={page.communityId} />}>
           {page.type === PageTypes.Explore && <ExplorePage isOpen={open} toggleOpen={toggleOpen} />}
+          {page.type === PageTypes.Search && <SearchFeed />}
 
           {page.type === PageTypes.NewsFeed && (
             <NewsFeedPage toggleOpen={toggleOpen} isOpen={open} />

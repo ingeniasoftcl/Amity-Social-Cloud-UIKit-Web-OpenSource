@@ -196,6 +196,7 @@
   "sidesectioncommunity.newfeed": "NewsFeed",
   "sidesectioncommunity.explore": "Explore",
   "sidesectioncommunity.community": "Community",
+  "sidesectioncommunity.search": "Search Posts",
 
   "communityFeed.join": "Join community to interact with all posts",
   "communityFeed.members": "Members",
@@ -247,7 +248,7 @@
   "tabs.editProfile": "Edit profile",
   "tabs.timeline": "Timeline",
   "tabs.followers": "Followers",
-  "tabs.followings": "Followings",
+  "tabs.followings": "Following",
   "tabs.pending": "Pending",
   "tabs.members": "Members",
   "tabs.moderators": "Moderators",

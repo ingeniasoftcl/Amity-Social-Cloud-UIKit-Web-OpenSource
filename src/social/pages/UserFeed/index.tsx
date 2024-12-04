@@ -52,6 +52,9 @@ const UserFeed = ({ userId, socialSettings }: UserFeedProps) => {
           setActiveTab(UserFeedTabs.FOLLOWERS);
           setFollowActiveTab(PENDING_TAB);
         }}
+        onPostCountClick={() => {
+          setActiveTab(UserFeedTabs.TIMELINE);
+        }}
         onFollowingCountClick={() => {
           setActiveTab(UserFeedTabs.FOLLOWERS);
           setFollowActiveTab(FollowersTabs.FOLLOWINGS);

@@ -1,6 +1,6 @@
 {
   "name": "@amityco/ui-kit-open-source",
-  "version": "3.11.0",
+  "version": "3.11.1",
   "engines": {
     "node": ">=16",
     "pnpm": ">=8"
@@ -113,6 +113,7 @@
     "@lexical/link": "^0.18.0",
     "@lexical/react": "^0.18.0",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@storybook/addons": "^7.6.17",
     "@tanstack/react-query": "^5.28.14",
     "axios": "^1.7.7",
     "clsx": "^2.1.0",
@@ -138,6 +139,7 @@
     "react-mentions": "^4.4.10",
     "react-modal-sheet": "^2.2.0",
     "react-sizeme": "^3.0.2",
+    "react-spinners": "^0.14.1",
     "react-textarea-autosize": "^8.5.3",
     "react-timeago": "^7.2.0",
     "react-tiny-popover": "^7.2.4",

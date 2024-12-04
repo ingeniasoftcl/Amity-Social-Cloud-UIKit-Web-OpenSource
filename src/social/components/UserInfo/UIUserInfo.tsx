@@ -40,6 +40,9 @@ import { useCustomComponent } from '~/core/providers/CustomComponentsProvider';
 import useUserFlaggedByMe from '~/social/hooks/useUserFlaggedByMe';
 import useFollowersCollection from '~/core/hooks/collections/useFollowersCollection';
 import { useConfirmContext } from '~/core/providers/ConfirmProvider';
+import getStories from '@amityco/ts-sdk';
+import { StoryRepository } from '@amityco/ts-sdk';
+import { getActiveStoriesByTarget } from '@amityco/ts-sdk/dist/storyRepository/observers/getActiveStoriesByTarget';
 
 interface UIUserInfoProps {
   userId?: string | null;
@@ -95,6 +98,7 @@ const UIUserInfo = ({
   const { isFlaggedByMe } = useUserFlaggedByMe(userId || undefined);
   const { confirm } = useConfirmContext();
   const [numberOfPosts, setNumberOfPosts] = useState<number>(0);
+  const [stories, setStories] = useState([]);
 
   // Added to count users posts
 
@@ -102,14 +106,11 @@ const UIUserInfo = ({
     const fetchNumberOfPosts = async () => {
       console.log('Fetching number of posts');
       try {
-        const response = await axios.get(
-          'https://dev-backend.we-say.com/api/posts/number-of-posts',
-          {
-            headers: {
-              Authorization: `Bearer ${getCookie('token')}`,
-            },
+        const response = await axios.get('http://localhost:3001/api/posts/number-of-posts', {
+          headers: {
+            Authorization: `Bearer ${getCookie('token')}`,
           },
-        );
+        });
         console.log(response.data);
         setNumberOfPosts(response.data.numberOfPosts);
       } catch (error) {
@@ -118,6 +119,37 @@ const UIUserInfo = ({
     };
 
     fetchNumberOfPosts();
+
+    const unsubscribe = StoryRepository.getStoriesByTargetIds(
+      {
+        targets: [
+          {
+            targetType: 'community',
+            targetId: '670d18dcf3aab15fe22ee7f9',
+          },
+        ],
+        options: {
+          orderBy: 'asc', // or desc
+        },
+      },
+      ({ data: storiesData, loading, error }) => {
+        // Pagination is not supported in this function
+        if (error) {
+          console.log('error', error);
+          // Handle any errors that occur during retrieving data
+        }
+        if (loading) {
+          console.log('loading', loading);
+          // Handle the loading state, e.g., show a loading spinner
+        }
+        if (storiesData) {
+          // Process the data
+          console.log('data', storiesData);
+        }
+      },
+    );
+    // Call to unsubscribe live collection
+    unsubscribe();
   }, []);
 
   const getCookie = (name: string) => {
@@ -134,6 +166,10 @@ const UIUserInfo = ({
     userId: currentUserId,
     status: 'pending',
   });
+
+  // const storyRepository = StoryRepository;
+
+  // console.log('storyRepository', storyRepository);
 
   const title = user?.displayName
     ? formatMessage({ id: 'user.unfollow.confirm.title' }, { displayName: user.displayName })
@@ -226,9 +262,8 @@ const UIUserInfo = ({
             // setTimeout(() => setFollowActiveTab(FollowersTabs.FOLLOWERS), 250);
           }}
         >
-          {millify(numberOfPosts)}
+          {millify(numberOfPosts)} <FormattedMessage id="posts" />
         </ClickableCount>
-        <FormattedMessage id="posts" />
 
         {/*  */}
 
@@ -239,9 +274,8 @@ const UIUserInfo = ({
             onFollowingCountClick?.();
           }}
         >
-          {millify(followingCount)}
+          {millify(followingCount)} <FormattedMessage id="counter.followings" />
         </ClickableCount>
-        <FormattedMessage id="counter.followings" />
         <ClickableCount
           onClick={() => {
             onFollowerCountClick?.();
@@ -249,9 +283,8 @@ const UIUserInfo = ({
             // setTimeout(() => setFollowActiveTab(FollowersTabs.FOLLOWERS), 250);
           }}
         >
-          {millify(followerCount)}
+          {millify(followerCount)} <FormattedMessage id="counter.followers" />
         </ClickableCount>
-        <FormattedMessage id="counter.followers" />
       </CountContainer>
       <Description data-qa-anchor="user-info-description">{description}</Description>
 

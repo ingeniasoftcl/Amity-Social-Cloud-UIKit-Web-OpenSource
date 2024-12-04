@@ -45,6 +45,10 @@ type Page =
       targetId: string;
       targetType: Amity.StoryTargetType;
       storyType: 'communityFeed' | 'globalFeed';
+    }
+  | {
+      type: PageTypes.Search;
+      communityId?: string;
     };
 
 type ContextValue = {
@@ -80,6 +84,7 @@ type ContextValue = {
       | null
       | undefined,
   ) => void;
+  // onClickSearch: (communityId: string) => void;
 };
 
 let defaultValue: ContextValue = {
@@ -100,6 +105,7 @@ let defaultValue: ContextValue = {
   setNavigationBlocker: () => {},
   onBack: () => {},
   goToDraftStoryPage: (targetId: string) => {},
+  // onClickSearch: (communityId: string) => {},
 };
 
 export const defaultNavigationBlocker = {
@@ -128,6 +134,7 @@ if (process.env.NODE_ENV !== 'production') {
     onBack: () => console.log('NavigationContext onBack()'),
     goToDraftStoryPage: (targetId, targetType, mediaType, storyType) =>
       console.log(`NavigationContext goToDraftStoryPage(${targetId})`),
+    // onClickSearch: (communityId) => console.log(`NavigationContext onClickSearch(${communityId})`),
   };
 }
 
@@ -159,6 +166,7 @@ interface NavigationProviderProps {
   onMessageUser?: (userId: string) => void;
   onBack?: () => void;
   goToDraftStoryPage?: (targetId: string) => void;
+  // onClickSearch?: (communityId: string) => void;
 }
 
 export default function NavigationProvider({
@@ -173,6 +181,7 @@ export default function NavigationProvider({
   onEditUser,
   onMessageUser,
   onBack,
+  // onClickSearch,
 }: NavigationProviderProps) {
   const [pages, setPages] = useState<Page[]>([
     { type: PageTypes.NewsFeed, communityId: undefined },
@@ -350,6 +359,21 @@ export default function NavigationProvider({
     [onChangePage, onMessageUser],
   );
 
+  // const handleClickSearch = useCallback(
+  //   (communityId) => {
+  //     const next = {
+  //       type: PageTypes.Search,
+  //       communityId,
+  //     };
+
+  //     if (onChangePage) return onChangePage(next);
+  //     if (onClickSearch) return onClickSearch(communityId);
+
+  //     pushPage(next);
+  //   },
+  //   [onChangePage, onClickSearch, pushPage],
+  // );
+
   const handleBack = useCallback(() => {
     if (onBack) {
       onBack();
@@ -406,6 +430,7 @@ export default function NavigationProvider({
         onBack: handleBack,
         goToDraftStoryPage,
         setNavigationBlocker,
+        // onClickSearch: handleClickSearch,
       }}
     >
       {children}

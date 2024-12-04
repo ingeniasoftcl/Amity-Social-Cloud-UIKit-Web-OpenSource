@@ -13,6 +13,7 @@ export interface ButtonProps {
   className?: string;
   'data-qa-anchor'?: string;
   type?: 'button' | 'submit' | 'reset';
+  onKeyDown?: (event: React.KeyboardEvent<HTMLButtonElement>) => void;
 }
 
 const Button = ({ variant, fullWidth = false, ...props }: ButtonProps) => {
