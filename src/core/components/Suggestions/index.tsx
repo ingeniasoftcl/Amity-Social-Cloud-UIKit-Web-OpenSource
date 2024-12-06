@@ -17,7 +17,7 @@ const MenuList = styled.div`
   border-radius: 4px;
   cursor: pointer;
 `;
-
+// TODO Here is the MenuList styled component
 const Placeholder = styled.div`
   flex: 1 1 auto;
   z-index: 1;

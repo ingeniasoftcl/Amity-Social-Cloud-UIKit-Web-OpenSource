@@ -1,56 +1,46 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useCustomComponent } from '~/core/providers/CustomComponentsProvider';
+
+import Navbar from '~/WeSayCustom/NavBar';
+import FooterWeSay from '~/WeSayCustom/Footer';
 
 const Container = styled.div`
-  overflow: hidden;
   display: grid;
-  grid-template-areas: 'side main' 'none main';
-  grid-template-columns: min-content auto;
-  grid-template-rows: 100%;
-  grid-gap: 0 20px;
+  grid-template-areas:
+    'header'
+    'content'
+    'footer';
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr;
+  height: 100vh;
   width: 100%;
-  height: 100%;
-  padding: 0 20px 0 0;
 `;
 
-const Main = styled.div`
-  grid-area: main;
-  overflow: auto;
-  width: 100%;
-  min-width: 20rem;
-  max-width: 90.75rem;
-  margin: 0 auto;
-
-  @media (max-width: 768px) {
-    max-width: unset;
-    min-width: unset;
-  }
+const Header = styled.header`
+  grid-area: header;
 `;
 
-const Side = styled.div`
-  grid-area: side;
-  overflow: auto;
+const Content = styled.main`
+  grid-area: content;
+  overflow-y: auto;
 `;
 
-interface LayoutProps {
-  aside: React.ReactNode;
-  children: React.ReactNode;
-}
+const Footer = styled.footer`
+  grid-area: footer;
+`;
 
-const Layout = ({ aside, children }: LayoutProps) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Container>
-      <Main>{children}</Main>
-      <Side>{aside}</Side>
+      <Header>
+        <Navbar />
+      </Header>
+      <Content>{children}</Content>
+      <Footer>
+        <FooterWeSay />
+      </Footer>
     </Container>
   );
 };
 
-export default (props: LayoutProps) => {
-  const CustomComponentFn = useCustomComponent<LayoutProps>('Layout');
-
-  if (CustomComponentFn) return CustomComponentFn(props);
-
-  return <Layout {...props} />;
-};
+export default Layout;

@@ -2,6 +2,7 @@ node_modules/
 build/
 storybook-build/
 .idea/
+amityco-ui-kit-open-source-3.11.1.tgz
 
 .env
 .env.local

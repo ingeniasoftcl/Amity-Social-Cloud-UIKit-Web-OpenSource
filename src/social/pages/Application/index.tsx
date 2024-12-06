@@ -5,11 +5,8 @@ import { PageTypes } from '~/social/constants';
 
 import MainLayout from '~/social/layouts/Main';
 
-import CommunitySideMenu from '~/social/components/CommunitySideMenu';
-
 import ExplorePage from '~/social/pages/Explore';
 import NewsFeedPage from '~/social/pages/NewsFeed';
-
 import UserFeedPage from '~/social/pages/UserFeed';
 import CategoryCommunitiesPage from '~/social/pages/CategoryCommunities';
 import CommunityEditPage from '~/social/pages/CommunityEdit';
@@ -22,20 +19,12 @@ import { StoryProvider } from '~/v4/social/providers/StoryProvider';
 import CommunityFeed from '../CommunityFeed';
 import ViewStoryPage from '../ViewStoryPage';
 import AmityDraftStoryPage from '../DraftPage';
-import { Search } from '~/icons';
 
 const ApplicationContainer = styled.div`
   height: 100%;
   width: 100%;
-`;
-
-const StyledCommunitySideMenu = styled(CommunitySideMenu)`
-  display: none;
-
-  @media (min-width: 768px) {
-    min-height: 100%;
-    display: block;
-  }
+  display: flex;
+  flex-direction: column;
 `;
 
 const Wrapper = styled.div`
@@ -49,10 +38,8 @@ const Wrapper = styled.div`
 
 const Community = () => {
   const { page } = useNavigation();
-
   const { client } = useSDK();
   const [socialSettings, setSocialSettings] = useState<Amity.SocialSettings | null>(null);
-
   const [open, setOpen] = useState(false);
 
   const toggleOpen = () => {
@@ -64,7 +51,6 @@ const Community = () => {
 
     async function run() {
       const settings = await client?.getSocialSettings();
-
       if (settings) {
         setSocialSettings(settings);
       }
@@ -81,14 +67,12 @@ const Community = () => {
   return (
     <StoryProvider>
       <ApplicationContainer>
-        <MainLayout aside={<StyledCommunitySideMenu activeCommunity={page.communityId} />}>
+        <MainLayout>
           {page.type === PageTypes.Explore && <ExplorePage isOpen={open} toggleOpen={toggleOpen} />}
           {page.type === PageTypes.Search && <SearchFeed />}
-
           {page.type === PageTypes.NewsFeed && (
             <NewsFeedPage toggleOpen={toggleOpen} isOpen={open} />
           )}
-
           {page.type === PageTypes.CommunityFeed && (
             <CommunityFeed
               communityId={page.communityId}
@@ -97,13 +81,11 @@ const Community = () => {
               toggleOpen={toggleOpen}
             />
           )}
-
           {page.type === PageTypes.ViewStory && (
             <Wrapper>
               <ViewStoryPage targetId={page.targetId} type={page.storyType} />
             </Wrapper>
           )}
-
           {page.type === PageTypes.DraftPage && (
             <AmityDraftStoryPage
               mediaType={page.mediaType}
@@ -111,19 +93,15 @@ const Community = () => {
               targetType={page.targetType}
             />
           )}
-
           {page.type === PageTypes.CommunityEdit && (
             <CommunityEditPage communityId={page.communityId} tab={page.tab} />
           )}
-
           {page.type === PageTypes.Category && (
             <CategoryCommunitiesPage categoryId={page.categoryId} />
           )}
-
           {page.type === PageTypes.UserFeed && (
             <UserFeedPage userId={page.userId} socialSettings={socialSettings} />
           )}
-
           {page.type === PageTypes.UserEdit && <ProfileSettings userId={page.userId} />}
         </MainLayout>
       </ApplicationContainer>
