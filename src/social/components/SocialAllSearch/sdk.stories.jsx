@@ -7,7 +7,7 @@ export default {
   title: 'SDK Connected/Social/Community',
 };
 
-export const SDKSearch = {
+export const SDKAllSearch = {
   render: () => {
     const [props] = useArgs();
     return <UiKitSocialAllSearch {...props} />;
