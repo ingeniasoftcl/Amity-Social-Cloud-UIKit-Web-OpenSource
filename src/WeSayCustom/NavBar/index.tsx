@@ -8,7 +8,7 @@ import {
   SearchContainer,
 } from './styles';
 
-import { FaSignOutAlt, FaComments, FaHome, FaBell } from 'react-icons/fa';
+import { FaComments, FaHome } from 'react-icons/fa';
 
 import NavMenuActionItem from './NavMenuActionItem/NavMenuActionItem';
 import { PageTypes } from '~/social/constants';
@@ -20,13 +20,23 @@ interface NavbarProps {
   view: 'home' | 'chat';
   setView: React.Dispatch<React.SetStateAction<'home' | 'chat'>>;
   shouldHideExplore?: boolean;
+  onViewChange?: (newView: 'home' | 'chat') => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ view, setView, shouldHideExplore }) => {
+const Navbar: React.FC<NavbarProps> = ({ view, setView, shouldHideExplore, onViewChange }) => {
   const { onChangePage, page } = useNavigation();
+
   const handleLogout = () => {
     document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     window.location.href = '/';
+  };
+
+  const handleViewChange = () => {
+    const newView = view === 'home' ? 'chat' : 'home';
+    setView(newView);
+    if (onViewChange) {
+      onViewChange(newView);
+    }
   };
 
   return (
@@ -67,24 +77,13 @@ const Navbar: React.FC<NavbarProps> = ({ view, setView, shouldHideExplore }) => 
         <SearchContainer>
           <SocialSearch searchBy="communities" sticky={false} />
         </SearchContainer>
-        <img src="https://via.placeholder.com/40" alt="User Avatar" />
-        <button
-          onClick={() => setView(view === 'home' ? 'chat' : 'home')}
-          className="flex items-center gap-2 text-white"
-        >
-          {view === 'chat' ? (
-            <>
-              <FaHome size={24} aria-label="Home" />
-            </>
-          ) : (
-            <>
-              <FaComments size={24} aria-label="Chat" />
-            </>
-          )}
+        <button onClick={handleViewChange}>
+          {view === 'home' ? <FaComments size={24} /> : <FaHome size={24} />}
         </button>
         <button onClick={handleLogout} className="flex items-center gap-2 text-white">
-          <FaSignOutAlt size={24} aria-label="Logout" />
+          <FormattedMessage id="sidesectioncommunity.logout" />
         </button>
+        <img src="https://via.placeholder.com/40" alt="User Avatar" />
       </RightSection>
     </NavbarContainer>
   );
