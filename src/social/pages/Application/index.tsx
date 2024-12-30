@@ -14,6 +14,7 @@ import ProfileSettings from '~/social/components/ProfileSettings';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import useSDK from '~/core/hooks/useSDK';
 import SearchFeed from '../SearchFeed';
+import HashTagFeed from '../HashTagFeed';
 
 import { StoryProvider } from '~/v4/social/providers/StoryProvider';
 import CommunityFeed from '../CommunityFeed';
@@ -70,6 +71,7 @@ const Community = () => {
         <MainLayout>
           {page.type === PageTypes.Explore && <ExplorePage isOpen={open} toggleOpen={toggleOpen} />}
           {page.type === PageTypes.Search && <SearchFeed />}
+          {page.type === PageTypes.HashTag && <HashTagFeed hashTag={page.hashTag} />}
           {page.type === PageTypes.NewsFeed && (
             <NewsFeedPage toggleOpen={toggleOpen} isOpen={open} />
           )}

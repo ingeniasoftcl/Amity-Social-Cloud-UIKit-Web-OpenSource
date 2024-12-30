@@ -9,6 +9,7 @@ export const enum PageTypes {
   ViewStory = 'viewstory',
   DraftPage = 'draftpage',
   Search = 'search',
+  HashTag = 'hashtag',
 }
 
 export const MemberRoles = Object.freeze({

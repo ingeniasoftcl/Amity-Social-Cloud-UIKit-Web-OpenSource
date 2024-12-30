@@ -16,6 +16,11 @@ type Page =
       isNewCommunity: boolean;
     }
   | {
+      type: PageTypes.HashTag;
+      hashTag: string;
+      communityId?: string;
+    }
+  | {
       type: PageTypes.CommunityEdit;
       communityId: string;
       tab: string;
@@ -56,6 +61,7 @@ type ContextValue = {
   onChangePage: (type: string) => void;
   onClickCategory: (categoryId: string) => void;
   onClickCommunity: (communityId: string) => void;
+  onClickHashTag: (hashTag: string) => void;
   onClickUser: (userId: string, pageType?: string) => void;
   onClickStory: (
     storyId: string,
@@ -92,6 +98,7 @@ let defaultValue: ContextValue = {
   onChangePage: (type: string) => {},
   onClickCategory: (categoryId: string) => {},
   onClickCommunity: (communityId: string) => {},
+  onClickHashTag: (hashTag: string) => {},
   onClickUser: (userId: string) => {},
   onClickStory: (
     storyId: string,
@@ -122,6 +129,7 @@ if (process.env.NODE_ENV !== 'production') {
       console.log(`NavigationContext onClickCategory(${categoryId})`),
     onClickCommunity: (communityId) =>
       console.log(`NavigationContext onClickCommunity(${communityId})`),
+    onClickHashTag: (hashTag) => console.log(`NavigationContext onClickHashTag(${hashTag})`),
     onClickUser: (userId) => console.log(`NavigationContext onClickUser(${userId})`),
     onClickStory: (storyId, storyType, targetIds) =>
       console.log(`NavigationContext onClickStory(${storyId}, ${storyType}, ${targetIds})`),
@@ -154,6 +162,7 @@ interface NavigationProviderProps {
   onChangePage?: (data: { type: string; [x: string]: string | boolean }) => void;
   onClickCategory?: (categoryId: string) => void;
   onClickCommunity?: (communityId: string) => void;
+  onClickHashTag?: (hashTag: string) => void;
   onClickUser?: (userId: string) => void;
   onClickStory?: (
     storyId: string,
@@ -175,6 +184,7 @@ export default function NavigationProvider({
   onChangePage: onChangePageProp,
   onClickCategory,
   onClickCommunity,
+  onClickHashTag,
   onClickUser,
   onCommunityCreated,
   onEditCommunity,
@@ -313,6 +323,21 @@ export default function NavigationProvider({
     [onChangePage, onClickUser, pushPage],
   );
 
+  const handleClickHashTag = useCallback(
+    (hashTag) => {
+      const next = {
+        type: PageTypes.HashTag,
+        hashTag,
+      };
+
+      if (onChangePage) return onChangePage(next);
+      if (onClickHashTag) return onClickHashTag(hashTag);
+
+      pushPage(next);
+    },
+    [onChangePage, onClickHashTag, pushPage],
+  );
+
   const handleEditUser = useCallback(
     (userId) => {
       const next = {
@@ -421,6 +446,7 @@ export default function NavigationProvider({
         onChangePage: handleChangePage,
         onClickCategory: handleClickCategory,
         onClickCommunity: handleClickCommunity,
+        onClickHashTag: handleClickHashTag,
         onClickUser: handleClickUser,
         onClickStory: handleClickStory,
         onCommunityCreated: handleCommunityCreated,

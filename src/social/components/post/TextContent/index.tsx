@@ -8,6 +8,7 @@ import Linkify from '~/core/components/Linkify';
 import MentionHighlightTag from '~/core/components/MentionHighlightTag';
 import { Mentioned, findChunks } from '~/helpers/utils';
 import { useCustomComponent } from '~/core/providers/CustomComponentsProvider';
+import { useNavigation } from '~/social/providers/NavigationProvider';
 
 export const PostContent = styled.div<{ isExpanded: boolean; postMaxLines: number }>`
   overflow-wrap: break-word;
@@ -38,6 +39,7 @@ interface TextContentProps {
 }
 
 const TextContent = ({ text, postMaxLines = 8, mentionees }: TextContentProps) => {
+  const { onClickHashTag } = useNavigation();
   const chunks = useMemo(
     () => processChunks(text || '', findChunks(mentionees)),
     [mentionees, text],
@@ -66,6 +68,10 @@ const TextContent = ({ text, postMaxLines = 8, mentionees }: TextContentProps) =
       {chunks.map((chunk) => {
         const key = `${text}-${chunk.start}-${chunk.end}`;
         const sub = text.substring(chunk.start, chunk.end);
+        console.log('chunk', chunk);
+        console.log('sub', sub);
+        console.log('key', key);
+
         if (chunk.highlight) {
           const mentionee = mentionees?.find((m) => m.index === chunk.start);
           if (mentionee) {
@@ -77,7 +83,32 @@ const TextContent = ({ text, postMaxLines = 8, mentionees }: TextContentProps) =
           }
           return <span key={key}>{sub}</span>;
         }
-        return <Linkify key={key}>{sub}</Linkify>;
+
+        // Split the text into words to identify hashtags
+        const words = sub.split(/\s+/);
+        return (
+          <span key={key}>
+            {words.map((word, index) => {
+              const isHashTag = word.startsWith('#') && word.length > 1; // Check if it's a hashtag
+              const wordKey = `${key}-${index}`;
+
+              if (isHashTag) {
+                return (
+                  <a
+                    key={wordKey}
+                    href="#"
+                    onClick={() => onClickHashTag(word)} // Pass the hashtag text without `#`
+                    style={{ color: 'blue', cursor: 'pointer' }} // Optional styling for the link
+                  >
+                    {word}
+                  </a>
+                );
+              }
+
+              return <span key={wordKey}>{word}</span>;
+            })}
+          </span>
+        );
       })}
     </PostContent>
   ) : null;
