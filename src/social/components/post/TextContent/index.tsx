@@ -68,9 +68,6 @@ const TextContent = ({ text, postMaxLines = 8, mentionees }: TextContentProps) =
       {chunks.map((chunk) => {
         const key = `${text}-${chunk.start}-${chunk.end}`;
         const sub = text.substring(chunk.start, chunk.end);
-        console.log('chunk', chunk);
-        console.log('sub', sub);
-        console.log('key', key);
 
         if (chunk.highlight) {
           const mentionee = mentionees?.find((m) => m.index === chunk.start);
@@ -84,28 +81,30 @@ const TextContent = ({ text, postMaxLines = 8, mentionees }: TextContentProps) =
           return <span key={key}>{sub}</span>;
         }
 
-        // Split the text into words to identify hashtags
-        const words = sub.split(/\s+/);
+        // Split the text into words and preserve spaces
+        const regex = /(\s+|#[^\s]+|[^\s]+)/g; // Match spaces, hashtags, or other words
+        const parts = sub.match(regex) || []; // Split into parts, preserving spaces
+
         return (
           <span key={key}>
-            {words.map((word, index) => {
-              const isHashTag = word.startsWith('#') && word.length > 1; // Check if it's a hashtag
-              const wordKey = `${key}-${index}`;
+            {parts.map((part, index) => {
+              const isHashTag = part.startsWith('#') && part.length > 1; // Check if it's a hashtag
+              const partKey = `${key}-${index}`;
 
               if (isHashTag) {
                 return (
                   <a
-                    key={wordKey}
+                    key={partKey}
                     href="#"
-                    onClick={() => onClickHashTag(word)} // Pass the hashtag text without `#`
+                    onClick={() => onClickHashTag(part)} // Pass the hashtag text without `#`
                     style={{ color: 'blue', cursor: 'pointer' }} // Optional styling for the link
                   >
-                    {word}
+                    {part}
                   </a>
                 );
               }
 
-              return <span key={wordKey}>{word}</span>;
+              return <span key={partKey}>{part}</span>; // Preserve other parts, including spaces
             })}
           </span>
         );

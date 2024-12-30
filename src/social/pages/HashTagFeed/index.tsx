@@ -13,6 +13,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import { Grid } from '../UserFeed/Followers/styles';
 import EmptyFeedIcon from '~/icons/EmptyFeed';
 import { ListEmptyState } from '~/social/pages/UserFeed/Followers/styles';
+import { set } from 'lodash';
 // import { AmityStoryRepository } from '@amityco/ts-sdk';
 
 const HashTagFeed = ({ hashTag }: { hashTag: string }) => {
@@ -44,6 +45,10 @@ const HashTagFeed = ({ hashTag }: { hashTag: string }) => {
   //   console.log('content', contents);
   // }, []);
 
+  useEffect(() => {
+    console.log(contents);
+  }, [contents]);
+
   const getCookie = (name: string) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -65,7 +70,12 @@ const HashTagFeed = ({ hashTag }: { hashTag: string }) => {
 
   return (
     <Wrapper data-qa-anchor="news-feed">
-      <HashTagSearch hashTag={hashTag} setContent={setContents} setSearching={setSearching} />
+      <HashTagSearch
+        hashTag={hashTag}
+        setContents={setContents}
+        contents={contents}
+        setSearching={setSearching}
+      />
       {!searching && contents !== undefined && contents !== null && contents.length > 0 ? (
         <LoadMoreWrapper
           hasMore={hasMore}
@@ -117,39 +127,5 @@ const HashTagFeed = ({ hashTag }: { hashTag: string }) => {
       )}
     </Wrapper>
   );
-
-  return <div>Search</div>;
-  // return (
-  //   <FeedScrollContainer dataLength={contents.length} next={loadMore} hasMore={false} loader={null}>
-  //     {/* {!isHiddenProfile ? ( */}
-  //     <>
-  //       {isLoading && !loadMoreHasBeenCalled ? renderLoadingSkeleton() : null}
-
-  //       {(!isLoading || loadMoreHasBeenCalled) && contents.length > 0 && (
-  //         <LoadMoreWrapper
-  //           hasMore={hasMore}
-  //           // loadMore={loadMore}
-  //           className="load-more no-border"
-  //           contentSlot={contents.map((content) => (
-  //             <Post
-  //               key={content.postId}
-  //               postId={content.postId}
-  //               hidePostTarget={false}
-  //               // readonly={readonly}
-  //               // onDeleted={(postId) => removeItem(postId)}
-  //             />
-  //           ))}
-  //         />
-  //       )}
-
-  //       {/* {!isLoading && contents.length === 0 && <div>Search</div>} */}
-
-  //       {/* {isLoading && loadMoreHasBeenCalled ? renderLoadingSkeleton() : null} */}
-  //     </>
-  //     {/* ) : (
-  //       <PrivateFeed />
-  //     )} */}
-  //   </FeedScrollContainer>
-  // );
 };
 export default HashTagFeed;

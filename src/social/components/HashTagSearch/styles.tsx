@@ -13,7 +13,7 @@ export const SearchIcon = styled(Search).attrs({ width: 16, height: 16 })`
   fill: ${({ theme }) => theme.palette.base.shade2};
 `;
 
-export const SocialSearchContainer = styled.div<{ sticky?: boolean }>`
+export const HashTagSearchContainer = styled.div<{ sticky?: boolean }>`
   position: relative;
 
   ${({ sticky }) =>
@@ -25,7 +25,7 @@ export const SocialSearchContainer = styled.div<{ sticky?: boolean }>`
     `};
 `;
 
-export const SocialSearchInput = styled(InputAutocomplete)`
+export const HashTagSearchInput = styled(InputAutocomplete)`
   ${({ theme }) => theme.typography.body};
   width: 100%;
   padding: 10px 10px 10px 40px;

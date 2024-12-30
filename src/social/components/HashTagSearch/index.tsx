@@ -9,8 +9,8 @@ import { PageTypes } from '~/social/constants';
 import useCommunitiesList from '~/social/hooks/useCommunitiesList';
 import { useNavigation } from '~/social/providers/NavigationProvider';
 import {
-  SocialSearchContainer,
-  SocialSearchInput,
+  HashTagSearchContainer,
+  HashTagSearchInput,
   SearchIcon,
   SearchIconContainer,
 } from './styles';
@@ -26,6 +26,7 @@ import Button from '~/core/components/Button';
 import { useCustomComponent } from '~/core/providers/CustomComponentsProvider';
 import useCommunitiesCollection from '~/social/hooks/collections/useCommunitiesCollection';
 import { Handle } from 'vaul';
+import { exact } from 'prop-types';
 
 const Container = styled.div`
   position: relative;
@@ -42,42 +43,57 @@ const SuggestionsMenu = styled(Menu)`
 interface HashTagSearchProps {
   className?: string;
   hashTag?: string;
-  setContent?: (content: any) => void;
-  setSearching?: (searching: boolean) => void;
+  setContents: (content: any) => void;
+  contents: any;
+  setSearching: (searching: boolean) => void;
 }
 
-const HashTagSearch = ({ hashTag, className, setContent, setSearching }: HashTagSearchProps) => {
+const HashTagSearch = ({
+  hashTag,
+  className,
+  contents,
+  setContents,
+  setSearching,
+}: HashTagSearchProps) => {
   const [searchValue, setSearchValue] = useState(hashTag || '');
   const { onChangePage, page } = useNavigation();
 
   useEffect(() => {
     if (hashTag) {
-      fetchNumberOfPosts();
+      setSearchValue(hashTag);
+      fetchNumberOfPosts(hashTag);
     }
   }, [hashTag]);
 
-  const fetchNumberOfPosts = async () => {
-    onChangePage(PageTypes.Search);
-    console.log('Fetching Search All');
+  // useEffect(() => {
+  //   console.log('contents', contents);
+  // }, [contents]);
+
+  const fetchNumberOfPosts = async (hashTag?: string) => {
+    onChangePage(PageTypes.HashTag);
     try {
-      setSearching?.(true);
-      console.log(searchValue);
+      setSearching(true);
+      console.log('searching for:', searchValue);
       const response = await axios.get('https://dev-backend.we-say.com/api/posts/search-posts', {
         headers: {
           Authorization: `Bearer ${getCookie('token')}`,
         },
         params: {
-          query: searchValue,
+          query: hashTag || searchValue,
           exactMatch: true,
         },
       });
-      console.log(response.data);
-      if (response.data) {
-        setContent?.(response.data.data.posts);
+
+      if (response.data.data.posts) {
+        setContents(response.data.data.posts);
+        console.log(response.data.data.posts);
+        console.log('new content', contents, response.data.data.posts);
       } else {
-        setContent?.([]);
+        console.log('response', response.data);
+        setContents([]);
+        console.log('new null content', contents);
       }
-      setSearching?.(false);
+      setSearching(false);
     } catch (error) {
       console.error('Failed to fetch Search All:', error);
     }
@@ -103,14 +119,14 @@ const HashTagSearch = ({ hashTag, className, setContent, setSearching }: HashTag
   };
 
   return (
-    <SocialSearchContainer className={className}>
+    <HashTagSearchContainer className={className}>
       <FormattedMessage id="exploreHeader.searchCommunityPlaceholder">
         {(placeholder) => (
           <Container className="flex space-y-2" style={{ marginBottom: '5px' }}>
             <input
               data-qa-anchor="social-search-input"
               value={searchValue}
-              placeholder="Search for posts"
+              placeholder="Search for posts with hashtags"
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               style={{
@@ -125,12 +141,12 @@ const HashTagSearch = ({ hashTag, className, setContent, setSearching }: HashTag
           </Container>
         )}
       </FormattedMessage>
-    </SocialSearchContainer>
+    </HashTagSearchContainer>
   );
 };
 
 export default (props: HashTagSearchProps) => {
-  const CustomComponentFn = useCustomComponent<HashTagSearchProps>('SocialSearch');
+  const CustomComponentFn = useCustomComponent<HashTagSearchProps>('HashTagSearch');
 
   if (CustomComponentFn) return CustomComponentFn(props);
 

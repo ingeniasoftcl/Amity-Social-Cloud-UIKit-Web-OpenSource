@@ -41,6 +41,7 @@ type CustomComponentName =
   | 'ProfileSettingsTabs'
   | 'RecentChat'
   | 'SideNavBar'
+  | 'HashTagSearch'
   | 'SocialSearch'
   | 'Tabs'
   | 'UICategoryCard'
